@@ -1,0 +1,201 @@
+import java.util.Arrays;
+
+public class HashTable {
+
+	// Set size of hash table and create corresponding array. Set values of
+	// the array to -1 to indicate empty slots.
+
+	private int size;
+	private int[] table;
+
+	public HashTable(int size) {
+		this.size = size;
+		this.table = new int[size];
+		Arrays.fill(table, -1);
+	}
+
+	// TODO For both algorithms, to compute the index j, write the following
+	// methods:
+	// - getLinearProbIndex (key, i)
+	// - getQuadraticProbIndex (key, i)
+	// - getDoubleHash (key, i)
+
+	public int getLinearProbIndex(int key, int i) {
+		return (key + i) % size;
+	}
+
+	public int getQuadraticProbIndex(int key, int i) {
+		return (key + i * i) % size;
+	}
+
+	public int getDoubleHash(int key, int i) {
+		return (key + i * (1 + (key % (size - 1)))) % size;
+	}
+	
+	// TODO: Write a java program to implement the following algorithms for Open
+	// Addressing techniques for
+	// Hash Table data structure. (Use a simple array of integers to store integer
+	// key values only).
+	
+	// Switch to determine the specific hashing algorithm.
+	private int insert(int key, int h) {
+		int i = 0;
+		int j;
+		while (i != size) {
+			switch (h) {
+			case 1:
+				j = getLinearProbIndex(key, i);
+				break;
+			case 2:
+				j = getQuadraticProbIndex(key, i);
+				break;
+			case 3:
+				j = getDoubleHash(key, i);
+				break;
+			default:
+				System.out.println("Error: Invalid hashing algorithm.");
+				return -1;
+			}
+			// Check if the value at index j in the array table is equal to the variable key
+			if (table[j] == -1) {
+			    // Insert the key at index j in the table
+				table[j] = key;
+				return j; // Return the index where the key was inserted
+			}
+			i++;
+		}
+		// If i = size, hash overflow.
+		System.out.println("Error: Hash Table Overflow.");
+		// Return -1 to indicate insertion failure.
+		return -1;
+	}
+	
+	// Switch to determine the specific hashing algorithm.
+	private int search(int key, int h) {
+		int i = 0;
+		int j;
+		while (i != size) {
+			switch (h) {
+			case 1:
+				j = getLinearProbIndex(key, i);
+				break;
+			case 2:
+				j = getQuadraticProbIndex(key, i);
+				break;
+			case 3:
+				j = getDoubleHash(key, i);
+				break;
+			default:
+				System.out.println("Error: Invalid hashing algorithm.");
+				return -1;
+			}
+			// Check if the value at index j in the array table is equal to the variable key
+			if (table[j] == key) {
+				// If the key is found, print a message to the console
+				System.out.println("Key " + key + " found at index " + j + ".");
+				return j; // Return the index where the key was found
+			}
+			i++;
+		}
+		// if key is not found or i = size
+		System.out.println("Key " + key + " not found.");
+		return -1;
+	}
+
+	// insert a key into the hash table and search for a key using linear probing
+	public int linearInsert(int key) {
+		return insert(key, 1);
+	}
+
+	public int linearSearch(int key) {
+		return search(key, 1);
+	}
+
+	// insert a key into the hash table and search for a key using quadratic probing
+	public int quadraticInsert(int key) {
+		return insert(key, 2);
+	}
+
+	public int quadraticSearch(int key) {
+		return search(key, 2);
+	}
+
+	// insert a key into the hash table and search for a key using double hashing
+	public int doubleInsert(int key) {
+		return insert(key, 3);
+	}
+
+	public int doubleSearch(int key) {
+		return search(key, 3);
+	}
+	
+	// All code below is mainly for debugging and demo.
+
+	// Print array without NIL value.
+	public String toString() {
+		String str = "[";
+		for (int value : table) {
+			// I value is not equal to -1, add value and comma to string.
+			if (value != -1) {
+				str += value + ", ";
+			}
+		}
+		if (str.length() > 1) {
+			str = str.substring(0, str.length() - 2); // Remove trailing comma and space
+		}
+		str += "]";
+		return str;
+	}
+	
+	private void clear() {
+		Arrays.fill(table, -1);
+	}
+
+	public static void main(String[] args) {
+		HashTable table = new HashTable(5);
+		// Insert keys using linear probing
+		table.linearInsert(1);
+		table.linearInsert(10);
+		System.out.println("Linear Probing Inserted Values:\n" + table.toString());
+		
+		// Search for keys using linear probing
+		System.out.println("\nLinear Probing Search for Values:");
+		// true
+		table.linearSearch(1);
+		table.linearSearch(10);
+		// false
+		table.linearSearch(11);
+
+		// Clear the hash table
+		table.clear();
+		
+		// Insert keys using quadratic probing
+		table.quadraticInsert(11);
+		table.quadraticInsert(21);
+		System.out.println("\nQuadratic Probing Inserted Values:\n" + table.toString());
+
+		//	Search for keys using quadratic probing
+		System.out.println("\nQuadratic Probing Search for Values:");
+		// true
+		table.quadraticSearch(11);
+		table.quadraticSearch(21);
+		// false
+		table.quadraticSearch(22);
+
+		// Clear the hash table
+		table.clear();
+		
+		// Insert keys using double hashing
+		table.doubleInsert(22);
+		table.doubleInsert(32);
+		System.out.println("\nDouble Hashing Inserted Values:\n" + table.toString());
+
+		// Search for keys using double hashing
+		System.out.println("\nDouble Hashing Search for Values:");
+		// true
+		table.doubleSearch(22);
+		table.doubleSearch(32);
+		// false
+		table.doubleSearch(33);
+	}
+}
